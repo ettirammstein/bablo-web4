@@ -233,6 +233,49 @@
   font-weight: bold;
 }
 
+ 
+ /* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+  /* 1. Титры: делаем текст чуть меньше и шире область просмотра */
+  .credit-line {
+    font-size: 1.1rem; /* Уменьшаем шрифт, чтобы строки не переносились */
+    margin-bottom: 0.8rem;
+  }
+  
+  .credit-line.core {
+    font-size: 1.5rem; /* Акцентная строка тоже чуть меньше */
+  }
+
+  #credits-inner {
+    width: 95%; /* На мобилках используем почти всю ширину */
+  }
+
+  /* 2. Интерфейс (HUD): чтобы кнопки не перекрывали текст */
+  #hud-top-row {
+    flex-direction: column; /* Год и название друг под другом */
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  #timeline-title {
+    max-width: 100%;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* 3. Лог-панель: делаем компактнее */
+  #log-panel {
+    bottom: 60px; /* Поднимаем чуть выше над кнопками */
+    max-height: 25vh;
+  }
+
+  /* 4. Кнопки: делаем крупнее, чтобы было удобно попадать пальцем */
+  button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
+
  </style>
 </head>
 <body>
