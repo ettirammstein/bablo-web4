@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>BABLO WEB4 WORLD – Genesis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
@@ -165,11 +168,77 @@
       transition: opacity 0.4s ease;
       pointer-events: none;
     }
-  </style>
+  
+  #credits-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 800px;
+}
+
+#credits-inner {
+  position: absolute;
+  left: 50%;
+  bottom: -40vh;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+  color: #f5f7ff;
+  font-family: "Courier New", monospace;
+  text-align: center;
+}
+
+.credit-line {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
+
+.credit-line.core {
+  font-size: 22px;
+  color: #00ffcc;
+  text-shadow: 0 0 12px rgba(0,255,204,0.9);
+}
+ /* Основной слой для титров */
+#credits-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1000px; /* Глубина для 3D */
+  z-index: 10; /* Чтобы быть над канвасом */
+}
+
+/* Контейнер для строк */
+#credits-inner {
+  position: absolute;
+  left: 50%;
+  width: 80%;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Стиль каждой буквы (для эффекта кометы) */
+.credit-line span {
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.comet-head {
+  color: #00ffcc;
+  text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
+  font-weight: bold;
+}
+
+ </style>
 </head>
 <body>
   <div id="app">
-    <canvas id="scene"></canvas>
+  <canvas id="scene"></canvas>
+    <div id="credits-layer"></div>
 
     <div id="hud-top">
       <div id="hud-top-row">

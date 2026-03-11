@@ -176,3 +176,74 @@ body {
   background: #00ff99;
   color: #000;
 }
+
+#credits-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 400px;
+}
+
+#credits-inner {
+  position: absolute;
+  left: 50%;
+  top: 80vh;
+  transform-origin: 50% 100%;
+  color: #feda4a;
+  text-align: center;
+  font-family: 'Pathway Gothic One', system-ui, sans-serif;
+}
+
+.credit-line {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.credit-line.core {
+  font-weight: bold;
+}
+.movie-title,
+.credit-line.core {
+  font-family: 'Unbounded', system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.credit-line {
+  font-family: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  font-weight: 300; /* тонкий текст */
+}
+.credit-line span {
+  display: inline-block;
+  animation: comet 1.2s ease-out infinite;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+@keyframes comet {
+  0% {
+    color: #8cffc8;
+    text-shadow:
+      0 0 0px rgba(0, 255, 204, 0),
+      0 0 0px rgba(180, 255, 120, 0);
+  }
+  40% {
+    color: #eafff5;
+    text-shadow:
+      0 0 6px rgba(0, 255, 204, 0.9),
+      0 0 12px rgba(0, 255, 204, 0.7),
+      0 0 20px rgba(180, 255, 120, 0.5);
+  }
+  100% {
+    color: #b2ffd9;
+    text-shadow:
+      0 0 2px rgba(0, 255, 204, 0.3),
+      0 0 4px rgba(180, 255, 120, 0.2);
+  }
+}
+#credits-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10; /* Добавь это, чтобы текст был поверх космоса */
+  pointer-events: none;
+  perspective: 1000px;
+}
