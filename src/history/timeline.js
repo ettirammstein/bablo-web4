@@ -1,7 +1,7 @@
 // src/history/timeline.js
 import { cosmos, HISTORY_EVENTS } from './historyData.js';
 import { get, addLog, setStatus, setTimelineTitle, setTimelineYear, shortenTitle, showCenterTitle } from '../ui.js';
-import { startGameLoop } from '../game/game.js';
+import { startGameLoop, switchToCosmosMode, switchToGameMode } from '../game/game.js';
 
 let cosmosRunning = false;
 let humanRunning = false;
@@ -27,6 +27,9 @@ export function initTimeline(canvas, onFinishGenesis) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resize();
+
+  switchToCosmosMode(); // <–– здесь
+
   window.addEventListener('resize', resize);
 
   function render() {
@@ -34,16 +37,14 @@ export function initTimeline(canvas, onFinishGenesis) {
     const h = canvas.clientHeight;
     ctx.clearRect(0, 0, w, h);
 
-    // фон космос/планета
     drawCosmos(ctx, w, h);
-
-    // если человечество пошло, можно поверх дорисовывать город/землю (пока мир от game.js)
 
     requestAnimationFrame(render);
   }
 
   render();
 }
+
 
 export function startGenesisTimeline() {
   for (const ev of HISTORY_EVENTS) ev.done = false;
@@ -183,6 +184,8 @@ function finalizeGenesis() {
 
   setStatus('GENESIS завершён. BABLINOVKA CORE активирован. Доступна кнопка BABLO.');
   showCenterTitle('BABLINOVKA CORE · GENESIS COMPLETE', 2500);
+
+  switchToGameMode(); // ← включаем режим города/эмоджи
 
   if (typeof finishCallback === 'function') {
     finishCallback();
