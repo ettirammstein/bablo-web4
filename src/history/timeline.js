@@ -28,6 +28,9 @@ const timelineState = {
 let lastEventTime = performance.now();
 let lastFrameTime = performance.now();
 
+// Очередь титров
+const captionQueue = [];
+
 // Состояние центральных титров
 const captionState = {
   fullText: '',
@@ -35,8 +38,14 @@ const captionState = {
   y: null,
   phase: 'idle', // 'typing' | 'scroll' | 'idle'
   holdTime: 2200,
-  scrollSpeed: 22
+  scrollSpeed: 22,
+  _scrollStartedAt: 0
 };
+
+function enqueueCaption(text) {
+  if (!text) return;
+  captionQueue.push(text);
+}
 
 function startCaption(text) {
   captionState.fullText = text;
@@ -45,8 +54,18 @@ function startCaption(text) {
   captionState.y = null;
 }
 
+function maybeStartNextCaption() {
+  if (captionState.phase !== 'idle') return;
+  const next = captionQueue.shift();
+  if (next) startCaption(next);
+}
+
 function updateCaption(dt) {
-  if (captionState.phase === 'idle' || !captionState.fullText) return;
+  if (captionState.phase === 'idle' || !captionState.fullText) {
+    // если титра нет, пробуем запускать следующий из очереди
+    maybeStartNextCaption();
+    return;
+  }
 
   const charsPerSec = 18;
   if (captionState.phase === 'typing') {
@@ -64,6 +83,8 @@ function updateCaption(dt) {
       if (captionState.y < -120) {
         captionState.phase = 'idle';
         captionState.fullText = '';
+        // текущий титр ушёл — пробуем запустить следующий
+        maybeStartNextCaption();
       }
     }
   }
@@ -164,17 +185,24 @@ export function startGenesisTimeline() {
   cosmosRunning = true;
   humanRunning = false;
 
+  // обнуляем очередь и состояние титров
+  captionQueue.length = 0;
+  captionState.fullText = '';
+  captionState.phase = 'idle';
+  captionState.visibleChars = 0;
+  captionState.y = null;
+
   setTimelineYear(-13800000000);
   setTimelineTitle('БОЛЬШОЙ ВЗРЫВ');
 
   startGameLoop();
-  startCaption('Большой взрыв. Рождение Вселенной и физики.');
+  enqueueCaption('Большой взрыв. Рождение Вселенной и физики.');
   timelineState.planetVisible = 0;
   startCosmosPhase();
 }
 
 function startCosmosPhase() {
-  const totalCosmosDuration = 60000; // пока оставляем, потом сузим
+  const totalCosmosDuration = 60000; // потом сузим
   const stepMs = 100;
 
   const timer = setInterval(() => {
@@ -201,20 +229,21 @@ function startCosmosPhase() {
       timelineState.planetVisible = 1;
     }
 
+    // космические титры — в очередь
     if (progress > 0.15 && progress < 0.2) {
-      startCaption('Густой раскалённый туман превращается в первые звёзды.');
+      enqueueCaption('Густой раскалённый туман превращается в первые звёзды.');
     }
     if (progress > 0.3 && progress < 0.35) {
-      startCaption('В спиралях галактик собираются облака газа и пыли.');
+      enqueueCaption('В спиралях галактик собираются облака газа и пыли.');
     }
     if (progress > 0.45 && progress < 0.5) {
-      startCaption('Протоземля. Океан магмы, бесконечные удары астероидов.');
+      enqueueCaption('Протоземля. Океан магмы, бесконечные удары астероидов.');
     }
     if (progress > 0.6 && progress < 0.65) {
-      startCaption('Первые океаны. Вода покрывает поверхность планеты.');
+      enqueueCaption('Первые океаны. Вода покрывает поверхность планеты.');
     }
     if (progress > 0.75 && progress < 0.8) {
-      startCaption(
+      enqueueCaption(
         'Химия становится биологией. Появляются первые формы жизни.'
       );
     }
@@ -269,7 +298,8 @@ function startHumanTimeline() {
       addLog(ev.year, ev.txt);
       setTimelineTitle(shortenTitle(ev.txt));
 
-      startCaption(ev.txt);
+      // вместо прямого старта — в очередь
+      enqueueCaption(ev.txt);
     }
 
     if (yr >= 2026.18) {
@@ -302,7 +332,7 @@ function finalizeGenesis() {
   setStatus(
     'GENESIS завершён. BABLINOVKA CORE активирован. Доступна кнопка BABLO.'
   );
-  startCaption('9 марта 2026 · BABLINOVKA CORE. Начало BABLO WEB4 WORLD.');
+  enqueueCaption('9 марта 2026 · BABLINOVKA CORE. Начало BABLO WEB4 WORLD.');
 
   switchToGameMode();
 
