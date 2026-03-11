@@ -1,7 +1,18 @@
 // src/history/timeline.js
 import { cosmos, HISTORY_EVENTS } from './historyData.js';
-import { get, addLog, setStatus, setTimelineTitle, setTimelineYear, shortenTitle, showCenterTitle } from '../ui.js';
-import { startGameLoop, switchToCosmosMode, switchToGameMode } from '../game/game.js';
+import {
+  get,
+  addLog,
+  setStatus,
+  setTimelineTitle,
+  setTimelineYear,
+  shortenTitle
+} from '../ui.js';
+import {
+  startGameLoop,
+  switchToCosmosMode,
+  switchToGameMode
+} from '../game/game.js';
 
 let cosmosRunning = false;
 let humanRunning = false;
@@ -14,6 +25,102 @@ const timelineState = {
 };
 
 let lastEventTime = performance.now();
+let lastFrameTime = performance.now();
+
+// Состояние центральных титров
+const captionState = {
+  fullText: '',
+  visibleChars: 0,
+  y: null,
+  phase: 'idle', // 'typing' | 'scroll' | 'idle'
+  holdTime: 2200,
+  scrollSpeed: 22
+};
+
+function startCaption(text) {
+  captionState.fullText = text;
+  captionState.visibleChars = 0;
+  captionState.phase = 'typing';
+  captionState.y = null;
+}
+
+function updateCaption(dt) {
+  if (captionState.phase === 'idle' || !captionState.fullText) return;
+
+  const charsPerSec = 18;
+  if (captionState.phase === 'typing') {
+    captionState.visibleChars += (charsPerSec * dt) / 1000;
+    if (captionState.visibleChars >= captionState.fullText.length) {
+      captionState.visibleChars = captionState.fullText.length;
+      captionState.phase = 'scroll';
+      captionState._scrollStartedAt = performance.now();
+    }
+  } else if (captionState.phase === 'scroll') {
+    const t = performance.now() - captionState._scrollStartedAt;
+    if (t > captionState.holdTime) {
+      const dy = (captionState.scrollSpeed * dt) / 1000;
+      captionState.y -= dy;
+      if (captionState.y < -120) {
+        captionState.phase = 'idle';
+        captionState.fullText = '';
+      }
+    }
+  }
+}
+
+function drawCaption(ctx, w, h) {
+  if (captionState.phase === 'idle' || !captionState.fullText) return;
+
+  const text = captionState.fullText.slice(
+    0,
+    Math.floor(captionState.visibleChars)
+  );
+
+  ctx.save();
+  ctx.font =
+    '18px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const lineHeight = 22;
+  const maxWidth = w * 0.7;
+
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+
+  for (const word of words) {
+    const test = current ? current + ' ' + word : word;
+    const width = ctx.measureText(test).width;
+    if (width > maxWidth && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = test;
+    }
+  }
+  if (current) lines.push(current);
+
+  let baseY = captionState.y;
+  if (baseY == null) {
+    baseY = h * 0.55;
+    captionState.y = baseY;
+  }
+
+  const totalHeight = lines.length * lineHeight;
+  const startY = baseY - totalHeight / 2;
+
+  // лёгкое затемнение под текстом
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+  ctx.fillRect(w * 0.15, startY - 12, w * 0.7, totalHeight + 24);
+
+  ctx.fillStyle = '#f5f7ff';
+  lines.forEach((line, i) => {
+    ctx.fillText(line, w * 0.5, startY + i * lineHeight);
+  });
+
+  ctx.restore();
+}
 
 export function initTimeline(canvas, onFinishGenesis) {
   finishCallback = onFinishGenesis;
@@ -33,11 +140,17 @@ export function initTimeline(canvas, onFinishGenesis) {
   window.addEventListener('resize', resize);
 
   function render() {
+    const now = performance.now();
+    const dt = now - lastFrameTime;
+    lastFrameTime = now;
+
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     ctx.clearRect(0, 0, w, h);
 
+    updateCaption(dt);
     drawCosmos(ctx, w, h);
+    drawCaption(ctx, w, h);
 
     requestAnimationFrame(render);
   }
@@ -58,11 +171,12 @@ export function startGenesisTimeline() {
   setTimelineTitle('БОЛЬШОЙ ВЗРЫВ');
 
   startGameLoop();
-  runCosmosPhase();
+  startCaption('Большой взрыв. Рождение Вселенной и физики.');
+  startCosmosPhase();
 }
 
-function runCosmosPhase() {
-  const totalCosmosDuration = 60000;
+function startCosmosPhase() {
+  const totalCosmosDuration = 60000; // потом сузим до ~20–30 сек
   const stepMs = 100;
 
   const timer = setInterval(() => {
@@ -80,17 +194,20 @@ function runCosmosPhase() {
     setTimelineYear(phase.yr);
     setTimelineTitle(phase.title);
 
-    if (progress === 0) {
-      showCenterTitle('BIG BANG', 1500);
+    if (progress > 0.15 && progress < 0.2) {
+      startCaption('Густой раскалённый туман превращается в первые звёзды.');
     }
-    if (progress > 0.2 && progress < 0.25) {
-      showCenterTitle('РАСКАЛЁННАЯ ЗЕМЛЯ', 1500);
+    if (progress > 0.3 && progress < 0.35) {
+      startCaption('В спиралях галактик собираются облака газа и пыли.');
     }
-    if (progress > 0.4 && progress < 0.45) {
-      showCenterTitle('ПЕРВЫЕ ОКЕАНЫ', 1500);
+    if (progress > 0.45 && progress < 0.5) {
+      startCaption('Протоземля. Океан магмы, бесконечные удары астероидов.');
     }
     if (progress > 0.6 && progress < 0.65) {
-      showCenterTitle('ЖИЗНЬ', 1500);
+      startCaption('Первые океаны. Вода покрывает поверхность планеты.');
+    }
+    if (progress > 0.75 && progress < 0.8) {
+      startCaption('Химия становится биологией. Появляются первые формы жизни.');
     }
 
     if (progress >= 1) {
@@ -145,12 +262,7 @@ function startHumanTimeline() {
       addLog(ev.year, ev.txt);
       setTimelineTitle(shortenTitle(ev.txt));
 
-      if (ev.year === -10000) showCenterTitle('НЕОЛИТ', 1500);
-      if (ev.year === 1450) showCenterTitle('ПЕЧАТНЫЙ СТАНОК', 1500);
-      if (ev.year === 1914) showCenterTitle('МИРОВЫЕ ВОЙНЫ', 1500);
-      if (ev.year === 1969) showCenterTitle('ЛУНА', 1500);
-      if (Math.floor(ev.year) === 2000) showCenterTitle('ЦИФРОВАЯ ЭРА', 1500);
-      if (Math.floor(ev.year) === 2020) showCenterTitle('ГЛОБАЛЬНЫЙ RESET', 1500);
+      startCaption(ev.txt);
     }
 
     if (yr >= 2026.18) {
@@ -180,8 +292,10 @@ function finalizeGenesis() {
   setTimelineYear(2026.18);
   setTimelineTitle('9 МАРТА 2026 · BABLINOVKA CORE');
 
-  setStatus('GENESIS завершён. BABLINOVKA CORE активирован. Доступна кнопка BABLO.');
-  showCenterTitle('BABLINOVKA CORE · GENESIS COMPLETE', 2500);
+  setStatus(
+    'GENESIS завершён. BABLINOVKA CORE активирован. Доступна кнопка BABLO.'
+  );
+  startCaption('9 марта 2026 · BABLINOVKA CORE. Начало BABLO WEB4 WORLD.');
 
   switchToGameMode();
 
