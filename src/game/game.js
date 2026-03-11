@@ -14,7 +14,6 @@ export async function initGame(canvas) {
   lastFrame = performance.now();
   loop();
 
-  // слушаем клавиши для управления «кнопкой BABLO»
   window.addEventListener('keydown', onKeyDown);
 }
 
@@ -29,7 +28,6 @@ export function switchToCosmosMode() {
 export function switchToGameMode() {
   mode = 'game';
 
-  // создаём «кнопку BABLO» как управляемого персонажа в центре
   const centerX = 16;
   const centerY = 16;
   player = new EmojiPerson(centerX, centerY);
@@ -39,7 +37,6 @@ export function switchToGameMode() {
   player.wealth = 1.0;
   entities.push(player);
 
-  // немного жителей вокруг
   for (let i = 0; i < 6; i++) spawnPerson();
 }
 
@@ -84,11 +81,9 @@ function render() {
   const h = canvas.clientHeight;
 
   if (mode === 'cosmos') {
-    // ничего не делаем: космос и планета рисуются в timeline.js
     return;
   }
 
-  // режим game: рисуем 2.5D‑город/землю поверх фона
   const g = c.createRadialGradient(w * 0.5, h * 0.9, 20, w * 0.5, h * 0.4, Math.max(w, h));
   g.addColorStop(0, 'rgba(3, 38, 27, 0.95)');
   g.addColorStop(1, 'rgba(2, 3, 11, 0.4)');
@@ -99,7 +94,6 @@ function render() {
   for (const e of entities) e.draw();
   for (const p of particles) p.draw();
 
-  // визуальный акцент на «кнопке BABLO»
   if (player) {
     c.save();
     c.globalAlpha = 0.35;

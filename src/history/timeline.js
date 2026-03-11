@@ -28,7 +28,7 @@ export function initTimeline(canvas, onFinishGenesis) {
   }
   resize();
 
-  switchToCosmosMode(); // <–– здесь
+  switchToCosmosMode();
 
   window.addEventListener('resize', resize);
 
@@ -44,7 +44,6 @@ export function initTimeline(canvas, onFinishGenesis) {
 
   render();
 }
-
 
 export function startGenesisTimeline() {
   for (const ev of HISTORY_EVENTS) ev.done = false;
@@ -63,7 +62,7 @@ export function startGenesisTimeline() {
 }
 
 function runCosmosPhase() {
-  const totalCosmosDuration = 60000; // 60 сек на космос
+  const totalCosmosDuration = 60000;
   const stepMs = 100;
 
   const timer = setInterval(() => {
@@ -104,7 +103,7 @@ function runCosmosPhase() {
 
 function startHumanTimeline() {
   humanRunning = true;
-  let yr = -10000000000; // начнём чуть после Big Bang для плавности
+  let yr = -10000000000;
 
   const timer = setInterval(() => {
     if (!humanRunning) {
@@ -146,7 +145,6 @@ function startHumanTimeline() {
       addLog(ev.year, ev.txt);
       setTimelineTitle(shortenTitle(ev.txt));
 
-      // несколько ключевых титров
       if (ev.year === -10000) showCenterTitle('НЕОЛИТ', 1500);
       if (ev.year === 1450) showCenterTitle('ПЕЧАТНЫЙ СТАНОК', 1500);
       if (ev.year === 1914) showCenterTitle('МИРОВЫЕ ВОЙНЫ', 1500);
@@ -185,7 +183,7 @@ function finalizeGenesis() {
   setStatus('GENESIS завершён. BABLINOVKA CORE активирован. Доступна кнопка BABLO.');
   showCenterTitle('BABLINOVKA CORE · GENESIS COMPLETE', 2500);
 
-  switchToGameMode(); // ← включаем режим города/эмоджи
+  switchToGameMode();
 
   if (typeof finishCallback === 'function') {
     finishCallback();
@@ -193,7 +191,6 @@ function finalizeGenesis() {
 }
 
 function drawCosmos(ctx, w, h) {
-  // фон: простой космос/глубина
   const grd = ctx.createRadialGradient(
     w * 0.5,
     h * 0.4,
@@ -208,7 +205,6 @@ function drawCosmos(ctx, w, h) {
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, w, h);
 
-  // звёзды
   ctx.fillStyle = 'rgba(210,230,255,0.6)';
   for (let i = 0; i < 80; i++) {
     const x = (i * 91 + timelineState.t * 0.02) % w;
@@ -219,7 +215,6 @@ function drawCosmos(ctx, w, h) {
     ctx.fill();
   }
 
-  // «планета» / ядро
   const phase = cosmos[timelineState.cosmosIndex] || cosmos[cosmos.length - 1];
   const cx = w * 0.5;
   const cy = h * 0.6;

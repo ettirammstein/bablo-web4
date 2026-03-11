@@ -58,7 +58,7 @@ export class EmojiPerson {
 
     c.fillStyle = 'rgba(0,0,0,0.45)';
     c.beginPath();
-    c.ellipse(0, 0, 11, 4, 0, 0, Math.PI * 2);
+    c.ellipse(0, 0, 11, 4, 0, Math.PI * 2);
     c.fill();
 
     const moodColor = this.mood > 0.7 ? '#34f58a' : this.mood > 0.4 ? '#e4c94f' : '#ff6a6a';

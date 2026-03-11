@@ -1,8 +1,11 @@
+// src/main.js
 import { initTimeline, startGenesisTimeline } from './history/timeline.js';
 import { initGame, startEmojiGame } from './game/game.js';
 import { get, setStatus, setPrimaryButton, setSecondaryButton, showCenterTitle } from './ui.js';
 
-const state = { mode: 'intro' };
+const state = {
+  mode: 'intro' // 'intro' | 'cosmos' | 'game'
+};
 
 function setMode(mode) {
   state.mode = mode;
