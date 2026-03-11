@@ -21,7 +21,8 @@ let finishCallback = null;
 const timelineState = {
   t: 0,
   cosmosIndex: 0,
-  year: -13800000000
+  year: -13800000000,
+  planetVisible: 0 // 0..1
 };
 
 let lastEventTime = performance.now();
@@ -110,7 +111,6 @@ function drawCaption(ctx, w, h) {
   const totalHeight = lines.length * lineHeight;
   const startY = baseY - totalHeight / 2;
 
-  // лёгкое затемнение под текстом
   ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
   ctx.fillRect(w * 0.15, startY - 12, w * 0.7, totalHeight + 24);
 
@@ -172,11 +172,12 @@ export function startGenesisTimeline() {
 
   startGameLoop();
   startCaption('Большой взрыв. Рождение Вселенной и физики.');
+  timelineState.planetVisible = 0;
   startCosmosPhase();
 }
 
 function startCosmosPhase() {
-  const totalCosmosDuration = 60000; // потом сузим до ~20–30 сек
+  const totalCosmosDuration = 60000; // пока оставляем, потом сузим
   const stepMs = 100;
 
   const timer = setInterval(() => {
@@ -194,6 +195,15 @@ function startCosmosPhase() {
     setTimelineYear(phase.yr);
     setTimelineTitle(phase.title);
 
+    // плавное появление планеты ближе к рождению Земли
+    if (phase.yr >= -4600000000 && phase.yr <= -4300000000) {
+      const span = -4300000000 + 4600000000; // 300 млн
+      const done = Math.min(1, (phase.yr + 4600000000) / span);
+      timelineState.planetVisible = done;
+    } else if (phase.yr > -4300000000) {
+      timelineState.planetVisible = 1;
+    }
+
     if (progress > 0.15 && progress < 0.2) {
       startCaption('Густой раскалённый туман превращается в первые звёзды.');
     }
@@ -207,7 +217,9 @@ function startCosmosPhase() {
       startCaption('Первые океаны. Вода покрывает поверхность планеты.');
     }
     if (progress > 0.75 && progress < 0.8) {
-      startCaption('Химия становится биологией. Появляются первые формы жизни.');
+      startCaption(
+        'Химия становится биологией. Появляются первые формы жизни.'
+      );
     }
 
     if (progress >= 1) {
@@ -233,12 +245,10 @@ function startHumanTimeline() {
     else if (yr < -1000000000) step = 200000000;
     else if (yr < -100000000) step = 50000000;
     else if (yr < -10000) step = 100000;
-    else if (yr < 0) step = 5000;
+    else if (yr < 0) step = 50;
     else if (yr < 1000) step = 50;
     else if (yr < 1900) step = 10;
-    else if (yr < 2000) step = 2;
-    else if (yr < 2020) step = 0.5;
-    else if (yr < 2025) step = 0.25;
+    else if (yr < 2000) step = 1;
     else step = 0.05;
 
     yr += step;
@@ -329,31 +339,35 @@ function drawCosmos(ctx, w, h) {
     ctx.fill();
   }
 
-  const phase = cosmos[timelineState.cosmosIndex] || cosmos[cosmos.length - 1];
+  const phase =
+    cosmos[timelineState.cosmosIndex] || cosmos[cosmos.length - 1];
   const cx = w * 0.5;
   const cy = h * 0.6;
   const R = Math.min(w, h) * 0.18;
 
-  ctx.save();
-  ctx.translate(cx, cy);
+  if (timelineState.planetVisible > 0) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.globalAlpha = timelineState.planetVisible;
 
-  let fill = '#0b2a3a';
-  if (phase.cls === 'stage-void') fill = '#050814';
-  else if (phase.cls === 'stage-lava') fill = '#ff7a2a';
-  else if (phase.cls === 'stage-water') fill = '#1eaad9';
-  else if (phase.cls === 'stage-life') fill = '#24e78b';
-  else if (phase.cls === 'stage-core') fill = '#52ffba';
+    let fill = '#0b2a3a';
+    if (phase.cls === 'stage-void') fill = '#050814';
+    else if (phase.cls === 'stage-lava') fill = '#ff7a2a';
+    else if (phase.cls === 'stage-water') fill = '#1eaad9';
+    else if (phase.cls === 'stage-life') fill = '#24e78b';
+    else if (phase.cls === 'stage-core') fill = '#52ffba';
 
-  ctx.beginPath();
-  ctx.arc(0, 0, R, 0, Math.PI * 2);
-  ctx.fillStyle = fill;
-  ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.fillStyle = fill;
+    ctx.fill();
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(0, 0, R + 10, 0, Math.PI * 2);
-  ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, R + 10, 0, Math.PI * 2);
+    ctx.stroke();
 
-  ctx.restore();
+    ctx.restore();
+  }
 }
