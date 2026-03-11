@@ -111,9 +111,6 @@ function drawCaption(ctx, w, h) {
   const totalHeight = lines.length * lineHeight;
   const startY = baseY - totalHeight / 2;
 
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-  ctx.fillRect(w * 0.15, startY - 12, w * 0.7, totalHeight + 24);
-
   ctx.fillStyle = '#f5f7ff';
   lines.forEach((line, i) => {
     ctx.fillText(line, w * 0.5, startY + i * lineHeight);
@@ -149,7 +146,7 @@ export function initTimeline(canvas, onFinishGenesis) {
     ctx.clearRect(0, 0, w, h);
 
     updateCaption(dt);
-    drawCosmos(ctx, w, h);
+    drawCosmos(ctx, w, h, dt);
     drawCaption(ctx, w, h);
 
     requestAnimationFrame(render);
@@ -314,7 +311,8 @@ function finalizeGenesis() {
   }
 }
 
-function drawCosmos(ctx, w, h) {
+function drawCosmos(ctx, w, h, dt) {
+  // фон
   const grd = ctx.createRadialGradient(
     w * 0.5,
     h * 0.4,
@@ -329,16 +327,51 @@ function drawCosmos(ctx, w, h) {
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, w, h);
 
-  ctx.fillStyle = 'rgba(210,230,255,0.6)';
+  // Big Bang / частицы
+  timelineState.t += dt;
+  const tNorm = Math.min(timelineState.t / 8000, 1); // первые 8 сек — взрыв
+  const flash = Math.max(0, 1 - tNorm * 1.2);
+
+  if (flash > 0) {
+    ctx.save();
+    ctx.globalAlpha = flash * 0.8;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+
+  ctx.save();
+  ctx.translate(w * 0.5, h * 0.4);
+  const maxR = Math.max(w, h) * 0.8;
+
+  for (let i = 0; i < 220; i++) {
+    const angle = (i / 220) * Math.PI * 2;
+    const base = (i % 40) / 40;
+    const r = maxR * (tNorm * 0.9 * base);
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r;
+
+    const alpha =
+      0.2 + 0.8 * (1 - tNorm) * (0.3 + 0.7 * Math.random());
+    ctx.fillStyle = `rgba(230,240,255,${alpha.toFixed(3)})`;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.1 + (i % 3) * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // обычные "галактические" точки
+  ctx.fillStyle = 'rgba(210,230,255,0.3)';
   for (let i = 0; i < 80; i++) {
-    const x = (i * 91 + timelineState.t * 0.02) % w;
-    const y = (i * 53) % h;
+    const x = (i * 91 + timelineState.t * 0.04) % w;
+    const y = (i * 53 + timelineState.t * 0.02) % h;
     const r = (i % 3) * 0.6 + 0.4;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
   }
 
+  // планета
   const phase =
     cosmos[timelineState.cosmosIndex] || cosmos[cosmos.length - 1];
   const cx = w * 0.5;
