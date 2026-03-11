@@ -29,11 +29,6 @@ export function setStatus(text) {
   if (el) el.textContent = text;
 }
 
-export function setSmallStatus(text) {
-  const el = get('small-status');
-  if (el) el.textContent = text;
-}
-
 export function setTimelineYear(year) {
   const el = get('timeline-year');
   if (!el) return;
@@ -47,14 +42,43 @@ export function setTimelineTitle(title) {
 }
 
 export function formatYear(y) {
-  if (y < -1000000) {
-    return '−' + (Math.abs(Math.round(y / 1000000))).toString() + ' млн';
+  const val = Math.round(y);
+  if (val < -1000000) {
+    return '−' + (Math.abs(Math.round(val / 1000000))).toString() + ' млн';
   }
-  if (y < 0) return '−' + Math.abs(Math.round(y)).toString();
-  return Math.round(y).toString();
+  if (val < 0) return '−' + Math.abs(val).toString();
+  return val.toString();
 }
 
 export function shortenTitle(txt) {
   if (txt.length <= 70) return txt;
   return txt.slice(0, 67) + '…';
+}
+
+export function setPrimaryButton(label, visible = true, disabled = false) {
+  const btn = get('primary-btn');
+  if (!btn) return;
+  btn.textContent = label;
+  btn.classList.toggle('hidden', !visible);
+  btn.disabled = disabled;
+}
+
+export function setSecondaryButton(label, visible = true, disabled = false) {
+  const btn = get('secondary-btn');
+  if (!btn) return;
+  btn.textContent = label;
+  btn.classList.toggle('hidden', !visible);
+  btn.disabled = disabled;
+}
+
+export function showCenterTitle(text, duration = 2000) {
+  const el = get('center-title');
+  if (!el) return;
+  el.textContent = text;
+  el.style.opacity = '1';
+  if (duration > 0) {
+    setTimeout(() => {
+      el.style.opacity = '0';
+    }, duration);
+  }
 }

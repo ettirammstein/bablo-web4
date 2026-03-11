@@ -53,14 +53,14 @@ export function getHeightAt(gx, gy) {
 }
 
 export function isoToScreen(gx, gy, h = 0) {
-  const canvas = get('world');
+  const canvas = get('scene');
   const w = canvas.clientWidth;
   const hgt = canvas.clientHeight;
   const tileW = 32;
   const tileH = 18;
 
   const cx = w / 2;
-  const cy = hgt * 0.65;
+  const cy = hgt * 0.7;
 
   const sx = (gx - gy) * (tileW / 2);
   const sy = (gx + gy) * (tileH / 2) - h * 2;

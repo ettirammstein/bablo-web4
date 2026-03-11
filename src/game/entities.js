@@ -21,16 +21,14 @@ export class EmojiPerson {
 
     this.head = HEAD_EMOJIS[Math.floor(Math.random() * HEAD_EMOJIS.length)];
 
-    // простое состояние
-    this.mood = 0.5 + Math.random() * 0.5;    // 0..1
-    this.energy = 0.5 + Math.random() * 0.5;  // 0..1
-    this.wealth = Math.random() * 0.3;        // 0..1 условный
+    this.mood = 0.5 + Math.random() * 0.5;
+    this.energy = 0.5 + Math.random() * 0.5;
+    this.wealth = Math.random() * 0.3;
 
     this.walkPhase = Math.random() * Math.PI * 2;
   }
 
   update(dt) {
-    // базовая скорость зависит от энергии
     const speed = 0.02 + this.energy * 0.06;
     const len = Math.sqrt(this.vx * this.vx + this.vy * this.vy) || 1;
     this.gx += (this.vx / len) * speed * dt;
@@ -41,7 +39,6 @@ export class EmojiPerson {
 
     this.walkPhase += dt * 0.008;
 
-    // лёгкая динамика состояний
     this.energy -= 0.000002 * dt;
     this.energy = Math.max(0.1, Math.min(1, this.energy));
 
@@ -59,24 +56,20 @@ export class EmojiPerson {
     c.save();
     c.translate(x, y);
 
-    // тень
     c.fillStyle = 'rgba(0,0,0,0.45)';
     c.beginPath();
     c.ellipse(0, 0, 11, 4, 0, 0, Math.PI * 2);
     c.fill();
 
-    // «тело» как стейтовая капсула
     const moodColor = this.mood > 0.7 ? '#34f58a' : this.mood > 0.4 ? '#e4c94f' : '#ff6a6a';
     c.fillStyle = moodColor;
     c.fillRect(-5, -32 + bob, 10, 24);
 
-    // голова‑эмоджи
     c.font = '22px system-ui, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji';
     c.textAlign = 'center';
     c.textBaseline = 'middle';
     c.fillText(this.head, 0, -48 + bob);
 
-    // маленький индикатор денег
     if (this.wealth > 0.4) {
       c.font = '14px system-ui, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji';
       c.fillText(MONEY_EMOJI, 12, -40 + bob);
