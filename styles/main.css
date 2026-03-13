@@ -1,249 +1,212 @@
+/* 1. Базовые стили и Фон */
 body {
   margin: 0;
   padding: 0;
   background: radial-gradient(circle at top, #050816 0, #02010a 45%, #000 100%);
-  color: #fff;
+  color: #f5f7ff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.hidden {
-  display: none;
-}
-
-#start-screen {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#start-btn {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(135deg, #00ff99, #00b3ff);
-  color: #000;
-}
-
-#universe {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-#top-ui {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-#year-tag {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-#era-name {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-#status-text {
-  font-size: 0.9rem;
-  color: #9efc9e;
-}
-
-#progress-bar {
-  width: 100%;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  height: 100vh;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+canvas#scene {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hidden { display: none !important; }
+
+/* 2. Верхняя панель (HUD TOP) */
+#hud-top {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+#hud-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* Одометр (счетчик дней/лет) */
+.odometer {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #9fffb9;
+  text-shadow: 0 0 15px rgba(159, 255, 185, 0.6);
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.counter-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  letter-spacing: 2px;
+  margin-top: -4px;
+}
+
+#timeline-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  text-align: right;
+  max-width: 50%;
+  text-transform: uppercase;
+}
+
+/* 3. Жидкий Прогресс-бар */
+#timeline-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
 }
 
 #progress-fill {
-  width: 0;
   height: 100%;
-  background: linear-gradient(90deg, #00ff99, #00b3ff);
-}
-
-#planet-wrap {
+  width: 0%;
+  background: linear-gradient(90deg, #1fda88, #16a3ff, #1fda88);
+  background-size: 200% 100%;
+  box-shadow: 0 0 20px rgba(31, 218, 136, 0.6);
+  transition: width 0.4s cubic-bezier(0.1, 0.5, 0.5, 1);
   position: relative;
-  height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-#main-planet {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  box-shadow: 0 0 40px #0ff, inset 0 0 60px #000;
-  transition: box-shadow 0.5s ease, background 0.5s ease;
-}
-
-/* состояния планеты */
-.stage-void {
-  background: radial-gradient(circle at 30% 20%, #222, #000);
-}
-
-.stage-lava {
-  background: radial-gradient(circle at 30% 20%, #ff6600, #550000);
-}
-
-.stage-water {
-  background: radial-gradient(circle at 30% 20%, #33ccff, #001133);
-}
-
-.stage-life {
-  background: radial-gradient(circle at 30% 20%, #00ff99, #003311);
-}
-
-#cinema-titles {
+#liquid-shine {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: move-liquid 2.5s infinite linear;
+}
+
+@keyframes move-liquid {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 4. Лог событий (Хроника внизу) */
+#log-panel {
+  position: absolute;
+  left: 15px;
+  bottom: 70px;
+  right: 15px;
+  max-height: 30vh;
   pointer-events: none;
+  display: flex;
+  flex-direction: column-reverse; /* Новые события снизу вверх */
 }
 
-.movie-title {
+.log-item {
+  padding: 4px 0;
+  font-size: 13px;
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Эффект остывающего неона для букв */
+.char-glow {
+  display: inline-block;
+  color: #fff;
+  text-shadow: 0 0 10px #26f0a8, 0 0 20px #1c9bff;
+  animation: heat-cool 1.8s forwards;
+}
+
+@keyframes heat-cool {
+  0% { transform: scale(1.1); filter: brightness(1.6); }
+  100% { text-shadow: none; color: rgba(255,255,255,0.85); transform: scale(1); filter: brightness(1); }
+}
+
+/* 5. Планета и Центр */
+#center-title {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
   text-align: center;
-  text-shadow: 0 0 20px #000;
-  animation: fade-move 4.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
-@keyframes fade-move {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.9);
-  }
-  20% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-}
-
-#chronicle-log {
-  max-height: 160px;
-  overflow: hidden;
+/* 6. Кнопки управления */
+#hud-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.85rem;
+  gap: 12px;
 }
 
-.log-card {
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 6px;
-}
-
-#scene-container {
-  margin-top: 8px;
-  height: 420px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-  transform: rotateX(60deg) rotateZ(0deg);
-}
-
-#world {
-  background: radial-gradient(circle at top, #022, #000);
-  border-radius: 16px;
-}
-
-#spawnBtn {
-  margin-top: 12px;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 999px;
+button {
+  padding: 10px 24px;
+  border-radius: 50px;
   border: none;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  background: #00ff99;
+  background: linear-gradient(90deg, #1fda88, #16a3ff);
   color: #000;
+  box-shadow: 0 4px 15px rgba(0, 255, 150, 0.3);
+  text-transform: uppercase;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+button:active { transform: scale(0.95); }
+button.secondary { background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; }
+
+/* 7. Титры (Star Wars Style) */
 #credits-layer {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  perspective: 1000px;
+  z-index: 60;
   pointer-events: none;
-  perspective: 400px;
 }
 
 #credits-inner {
   position: absolute;
   left: 50%;
-  top: 80vh;
-  transform-origin: 50% 100%;
-  color: #feda4a;
+  bottom: -50vh;
+  transform: translateX(-50%) rotateX(25deg);
+  width: 80%;
   text-align: center;
-  font-family: 'Pathway Gothic One', system-ui, sans-serif;
 }
 
 .credit-line {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #9fffb9;
 }
 
-.credit-line.core {
-  font-weight: bold;
-}
-.movie-title,
-.credit-line.core {
-  font-family: 'Unbounded', system-ui, sans-serif;
-  font-weight: 700;
-}
-
-.credit-line {
-  font-family: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
-  font-weight: 300; /* тонкий текст */
-}
-.credit-line span {
-  display: inline-block;
-  animation: comet 1.2s ease-out infinite;
-  animation-delay: calc(var(--i) * 40ms);
-}
-
-@keyframes comet {
-  0% {
-    color: #8cffc8;
-    text-shadow:
-      0 0 0px rgba(0, 255, 204, 0),
-      0 0 0px rgba(180, 255, 120, 0);
-  }
-  40% {
-    color: #eafff5;
-    text-shadow:
-      0 0 6px rgba(0, 255, 204, 0.9),
-      0 0 12px rgba(0, 255, 204, 0.7),
-      0 0 20px rgba(180, 255, 120, 0.5);
-  }
-  100% {
-    color: #b2ffd9;
-    text-shadow:
-      0 0 2px rgba(0, 255, 204, 0.3),
-      0 0 4px rgba(180, 255, 120, 0.2);
-  }
-}
-#credits-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 10; /* Добавь это, чтобы текст был поверх космоса */
-  pointer-events: none;
-  perspective: 1000px;
+/* Адаптация */
+@media (max-width: 600px) {
+  .odometer { font-size: 20px; }
+  #timeline-title { font-size: 12px; }
+  #log-panel { max-height: 20vh; }
 }
