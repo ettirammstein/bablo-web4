@@ -32,7 +32,7 @@ export function startStarsCredits() {
     });
 
     inner.appendChild(line);
-  });
+  };
 
   let start = null;
   const totalDuration = 50000; // 50 секунд на весь полет
