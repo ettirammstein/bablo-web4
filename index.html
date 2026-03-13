@@ -288,33 +288,49 @@
 <body>
   <div id="app">
     <canvas id="scene"></canvas>
-    <div id="credits-layer"></div>
-
-    <div id="hud-top">
-  <div id="hud-top-grid">
-    <!-- Колонка 1: Годы (15%) -->
-    <div id="years-block">
-      <div id="days-counter" class="odometer">13 800 000 000</div>
-      <div class="counter-label">ЛЕТ ДО CORE</div>
-    </div>
     
-    <!-- Колонка 2: Высокий таймлайн (85%) -->
-    <div id="timeline-vessel">
-      <div id="progress-fill">
-        <div id="liquid-wave"></div>
-        <div id="liquid-bubbles"></div>
+    <!-- 2. Верхняя панель (HUD TOP) -->
+    <div id="hud-top">
+      <div id="hud-top-grid">
+        
+        <!-- Левая часть: Все счетчики (годы и проценты) -->
+        <div class="counters-group">
+          <div id="years-block">
+            <div id="days-counter" class="odometer">13 800 000 000</div>
+            <div class="counter-label">ЛЕТ ДО CORE</div>
+          </div>
+          
+          <div class="odometer-vessel">
+            <div class="counter-label">Progress</div>
+            <div class="odometer">88.16%</div>
+          </div>
+        </div>
+
+        <!-- Правая часть: Живой Прогресс-бар -->
+        <div id="timeline-vessel">
+          <div id="progress-fill" style="width: 88.16%;">
+            <div id="liquid-wave"></div>
+            <div id="liquid-bubbles"></div>
+          </div>
+        </div>
+        
       </div>
     </div>
-  </div>
-</div>
 
+    <!-- 4. Титры (Центральный поток) -->
+    <div id="credits-layer"></div>
+
+    <!-- 5. Кнопки управления -->
     <div id="hud-bottom">
       <button id="primary-btn">START GENESIS</button>
       <button id="secondary-btn" class="secondary hidden">BABLO</button>
     </div>
 
+    <!-- 6. Центр -->
     <div id="center-title">BABLO WEB4 WORLD · GENESIS</div>
   </div>
+
   <script type="module" src="./src/main.js"></script>
 </body>
+
 </html>
