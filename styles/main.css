@@ -79,6 +79,7 @@ canvas#scene {
   transition: width 0.3s ease-out;
   box-shadow: 0 0 20px rgba(31, 218, 136, 0.5);
   animation: gradient-flow 3s linear infinite;
+  border-radius: 16px;
 }
 
 #liquid-wave {
@@ -88,7 +89,7 @@ canvas#scene {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg,transparent,rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-  animation: wave-slide 2s infinite linear;
+  animation: wave-slide 5s infinite linear;
 }
 
 @keyframes wave-move {
@@ -163,7 +164,7 @@ canvas#scene {
   inherits: false;
 }
 
-button {
+button#primary-btn {
   --angle: 60deg; /* Начальный угол */
   border-radius: 999px;
   border: none;
@@ -171,24 +172,18 @@ button {
   font-size: 16px;
   font-family: 'Unbounded', sans-serif;
   cursor: pointer;
-  
-  /* Используем переменную в градиенте */
   background: linear-gradient(var(--angle), #15a365d4, #74f3bc, #16a3ff, #000c1d);
-  background-size: 200% 200%; /* Увеличиваем масштаб для глубины */
-  
+  background-size: 200% 200%; 
   color: #dbdbdb;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  
   box-shadow: 0px 8px 32px #71ffd6, 0px 16px 64px rgb(5 48 82);
-  
-  /* Плавный возврат в исходное состояние */
   transition: --angle 0.5s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
-  --angle: 420deg; /* Поворот на 360 градусов (60 + 360) */
+  --angle: 420deg;
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0px 12px 40px #71ffd6, 0px 20px 80px rgb(5 48 82);
   
