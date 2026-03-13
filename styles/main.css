@@ -157,20 +157,51 @@ canvas#scene {
   gap: 12px;
 }
 
-button {
-    border-radius: 999px;
-    border: none;
-    padding: 32px 64px;
-    font-size: 16px;
-    font-family: Unbounded;
-    cursor: pointer;
-    background: linear-gradient(60deg, #15a365d4, #74f3bc, #16a3ff, #000c1d);
-    color: #dbdbdb;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    box-shadow: 0px 8px 32px #71ffd6, 0px 16px 64px rgb(5 48 82);
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 60deg;
+  inherits: false;
 }
+
+button {
+  --angle: 60deg; /* Начальный угол */
+  border-radius: 999px;
+  border: none;
+  padding: 32px 64px;
+  font-size: 16px;
+  font-family: 'Unbounded', sans-serif;
+  cursor: pointer;
+  
+  /* Используем переменную в градиенте */
+  background: linear-gradient(var(--angle), #15a365d4, #74f3bc, #16a3ff, #000c1d);
+  background-size: 200% 200%; /* Увеличиваем масштаб для глубины */
+  
+  color: #dbdbdb;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  
+  box-shadow: 0px 8px 32px #71ffd6, 0px 16px 64px rgb(5 48 82);
+  
+  /* Плавный возврат в исходное состояние */
+  transition: --angle 0.5s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  --angle: 420deg; /* Поворот на 360 градусов (60 + 360) */
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0px 12px 40px #71ffd6, 0px 20px 80px rgb(5 48 82);
+  
+  /* Если нужно бесконечное вращение, пока наведена мышь: */
+  animation: rotateGradient 3s linear infinite;
+}
+
+@keyframes rotateGradient {
+  to {
+    --angle: 420deg;
+  }
+}
+
 
 button:active { transform: scale(0.95); }
 button.secondary { background: rgba(255,255,255,0.1); color: #fff; }
