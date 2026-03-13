@@ -1,4 +1,4 @@
-/* 1. Базовые стили и Фон */
+@import url('https://fonts.googleapis.com');
 body {
   margin: 0;
   padding: 0;
@@ -29,27 +29,23 @@ canvas#scene {
   top: 15px;
   left: 15px;
   right: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  pointer-events: none;
   z-index: 100;
+  pointer-events: none;
 }
 
-#hud-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+#hud-top-grid {
+  display: grid;
+  grid-template-columns: 18% 82%;
+  gap: 20px;
+  align-items: center;
 }
 
-/* Одометр (счетчик дней/лет) */
 .odometer {
   font-family: 'Unbounded', sans-serif;
   font-size: 28px;
   font-weight: 700;
   color: #9fffb9;
   text-shadow: 0 0 15px rgba(159, 255, 185, 0.6);
-  letter-spacing: 1px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -58,169 +54,11 @@ canvas#scene {
   text-transform: uppercase;
   opacity: 0.7;
   letter-spacing: 2px;
-  margin-top: -4px;
-}
-
-#timeline-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 16px;
-  text-align: right;
-  max-width: 50%;
-  text-transform: uppercase;
 }
 
 /* 3. Жидкий Прогресс-бар */
-#timeline-bar {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-}
-
-#progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #1fda88, #16a3ff, #1fda88);
-  background-size: 200% 100%;
-  box-shadow: 0 0 20px rgba(31, 218, 136, 0.6);
-  transition: width 0.4s cubic-bezier(0.1, 0.5, 0.5, 1);
-  position: relative;
-}
-
-#liquid-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  animation: move-liquid 2.5s infinite linear;
-}
-
-@keyframes move-liquid {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* 4. Лог событий (Хроника внизу) */
-#log-panel {
-  position: absolute;
-  left: 15px;
-  bottom: 70px;
-  right: 15px;
-  max-height: 30vh;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column-reverse; /* Новые события снизу вверх */
-}
-
-.log-item {
-  padding: 4px 0;
-  font-size: 13px;
-  animation: slide-up 0.5s ease-out forwards;
-}
-
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Эффект остывающего неона для букв */
-.char-glow {
-  display: inline-block;
-  color: #fff;
-  text-shadow: 0 0 10px #26f0a8, 0 0 20px #1c9bff;
-  animation: heat-cool 1.8s forwards;
-}
-
-@keyframes heat-cool {
-  0% { transform: scale(1.1); filter: brightness(1.6); }
-  100% { text-shadow: none; color: rgba(255,255,255,0.85); transform: scale(1); filter: brightness(1); }
-}
-
-/* 5. Планета и Центр */
-#center-title {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'Unbounded', sans-serif;
-  font-size: 24px;
-  text-align: center;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-/* 6. Кнопки управления */
-#hud-bottom {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-}
-
-button {
-  padding: 10px 24px;
-  border-radius: 50px;
-  border: none;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  background: linear-gradient(90deg, #1fda88, #16a3ff);
-  color: #000;
-  box-shadow: 0 4px 15px rgba(0, 255, 150, 0.3);
-  text-transform: uppercase;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-button:active { transform: scale(0.95); }
-button.secondary { background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; }
-
-/* 7. Титры (Star Wars Style) */
-#credits-layer {
-  position: absolute;
-  inset: 0;
-  perspective: 1000px;
-  z-index: 60;
-  pointer-events: none;
-}
-
-#credits-inner {
-  position: absolute;
-  left: 50%;
-  bottom: -50vh;
-  transform: translateX(-50%) rotateX(25deg);
-  width: 80%;
-  text-align: center;
-}
-
-.credit-line {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #9fffb9;
-}
-
-/* Адаптация */
-@media (max-width: 600px) {
-  .odometer { font-size: 20px; }
-  #timeline-title { font-size: 12px; }
-  #log-panel { max-height: 20vh; }
-}
-
-#hud-top-grid {
-  display: grid;
-  grid-template-columns: 18% 82%; /* Примерно 15/85 с учетом отступов */
-  gap: 20px;
-  align-items: center;
-  padding: 10px;
-}
-
 #timeline-vessel {
-  height: 40px; /* Высокий, чтобы было видно "жидкость" */
+  height: 40px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
@@ -239,7 +77,6 @@ button.secondary { background: rgba(255,255,255,0.1); color: #fff; box-shadow: n
   box-shadow: 0 0 25px rgba(31, 218, 136, 0.4);
 }
 
-/* Эффект плескающейся волны */
 #liquid-wave {
   position: absolute;
   top: 0; right: -20px; width: 40px; height: 100%;
@@ -254,32 +91,92 @@ button.secondary { background: rgba(255,255,255,0.1); color: #fff; box-shadow: n
   to { transform: skewX(-25deg) translateX(10px); }
 }
 
-/* Контейнер для единого потока событий */
-#story-stream {
+/* 4. Титры (Центральный поток) */
+#credits-layer {
   position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
+  inset: 0;
+  z-index: 60;
   display: flex;
-  flex-direction: column-reverse; /* Новое снизу, старое улетает вверх */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  z-index: 100;
+  /* Можно добавить perspective(1000px) rotateX(10deg) если нужен легкий наклон */
 }
 
-.story-line {
-  text-align: center;
-  margin-top: 15px;
+.credit-line {
   font-family: 'Unbounded', sans-serif;
   font-size: 1.2rem;
-  color: #fff;
+  color: #9fffb9;
+  text-align: center;
+  
+  max-height: 0;
   opacity: 0;
-  animation: fly-up 8s linear forwards; /* Длительность полета */
+  margin: 0;
+  overflow: hidden;
+  transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.5s ease, 
+              margin 0.5s ease;
 }
 
-@keyframes fly-up {
-  0% { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(5px); }
-  10% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-300px); }
+.credit-line.active {
+  max-height: 3.5rem;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+/* Каретка печати */
+.type-cursor {
+  border-right: 2px solid #1fda88;
+  animation: blink 0.7s step-end infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: #1fda88 }
+}
+
+/* 5. Кнопки управления */
+#hud-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: none;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, #1fda88, #16a3ff);
+  color: #000;
+  text-transform: uppercase;
+  transition: transform 0.2s;
+}
+
+button:active { transform: scale(0.95); }
+button.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* 6. Центр */
+#center-title {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+}
+
+.odometer, #timeline-title, button, .credit-line, #center-title {
+  font-family: 'Unbounded', system-ui, sans-serif !important;
 }

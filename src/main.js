@@ -67,3 +67,43 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   setMode('intro');
 });
+
+const creditsContainer = document.getElementById('credits-layer');
+
+function showCreditLine(text) {
+  const line = document.createElement('div');
+  line.className = 'credit-line';
+  
+  const textNode = document.createElement('span');
+  const cursor = document.createElement('span');
+  cursor.className = 'type-cursor';
+  
+  line.appendChild(textNode);
+  line.appendChild(cursor);
+  creditsContainer.appendChild(line);
+
+  // 1. Раздвигаем интервал
+  requestAnimationFrame(() => {
+    line.classList.add('active');
+  });
+
+  // 2. Печатаем текст
+  let i = 0;
+  const typingSpeed = 40; // мс на символ
+
+  function type() {
+    if (i < text.length) {
+      textNode.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, typingSpeed);
+    } else {
+      // Плавное исчезновение курсора после печати
+      cursor.style.transition = 'opacity 0.5s';
+      cursor.style.opacity = '0';
+      setTimeout(() => cursor.remove(), 500);
+    }
+  }
+
+  // Начинаем печать чуть позже начала раздвигания
+  setTimeout(type, 200);
+}
