@@ -9,29 +9,29 @@
  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
  <link rel="icon" type="image/png" sizes="192x192" href="./android-chrome-192x192.png">
  <link rel="icon" type="image/png" sizes="512x512" href="./android-chrome-512x512.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&display=swap" rel="stylesheet">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #020412;
-      color: #f5f7ff;
+      background: #002;
+      color: #fff;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       overflow: hidden;
     }
     #app {
       position: relative;
-      width: 100vw;
-      height: 100vh;
+      width: 99vw;
+      height: 99vh;
       background: radial-gradient(circle at center, #03091b, #01020a 70%);
     }
     #scene {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 99%;
+      height: 99%;
       display: block;
     }
 
@@ -52,21 +52,23 @@
       pointer-events: none;
     }
     #timeline-year {
-      font-size: 16px;
+      font-size: 20px;
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.06em;
+      letter-spacing: 1.01em;
       text-transform: uppercase;
       color: #9fffb9;
+      padding-left: 20px;
     }
+
     #timeline-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
       text-align: right;
       max-width: 60%;
     }
     #timeline-bar {
       position: relative;
-      height: 6px;
+      height: 10px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.06);
       overflow: hidden;
@@ -78,9 +80,9 @@
       left: 0;
       height: 100%;
       width: 0;
-      background-image: linear-gradient(90deg, #26f0a8, #1c9bff);
+      background-image: linear-gradient(60deg, #26f0a8, #1c9bff);
       box-shadow: 0 0 12px rgba(38, 240, 168, 0.6);
-      transition: width 0.1s linear;
+      transition: width 0.5s linear;
     }
 
     #hud-bottom {
@@ -123,7 +125,7 @@
       max-height: 35vh;
       padding: 6px 10px;
       box-sizing: border-box;
-      border-radius: 8px;
+      border-radius: 15px;
       background: radial-gradient(circle at bottom left, rgba(3, 24, 42, 0.9), rgba(2, 7, 20, 0.85));
       box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
       display: flex;

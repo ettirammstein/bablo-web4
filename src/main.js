@@ -1,4 +1,4 @@
-import { startStarsCredits } from './history/credits.js'; // Проверь путь!
+import { startStarsCredits } from './credits.js';
 import { initTimeline, startGenesisTimeline } from './history/timeline.js';
 import { initGame, startEmojiGame } from './game/game.js';
 import { get, setStatus, setPrimaryButton, setSecondaryButton, showCenterTitle } from './ui.js';
