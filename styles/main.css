@@ -140,7 +140,7 @@ canvas#scene {
 /* 5. Кнопки управления */
 #hud-bottom {
   position: absolute;
-  bottom: 20px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -148,17 +148,18 @@ canvas#scene {
 }
 
 button {
-  padding: 10px 24px;
-  border-radius: 50px;
-  border: none;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  background: linear-gradient(90deg, #1fda88, #16a3ff);
-  color: #000;
-  text-transform: uppercase;
-  transition: transform 0.2s;
+    border-radius: 999px;
+    border: none;
+    padding: 16px 32px;
+    font-size: 24px;
+    font-family: Unbounded;
+    cursor: pointer;
+    background: linear-gradient(60deg, #15a365d4, #74f3bc, #16a3ff, #000c1d);
+    color: #020412;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0px 8px 32px #71ffd6, 0px 16px 64px rgb(5 48 82);
 }
 
 button:active { transform: scale(0.95); }
@@ -178,5 +179,5 @@ button.secondary { background: rgba(255,255,255,0.1); color: #fff; }
 }
 
 .odometer, #timeline-title, button, .credit-line, #center-title {
-  font-family: 'Unbounded', system-ui, sans-serif !important;
+  font-family: 'Unbounded';
 }
