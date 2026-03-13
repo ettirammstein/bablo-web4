@@ -14,7 +14,6 @@ function setMode(mode) {
     setStatus('BABLO WEB4 WORLD · GENESIS READY. Нажми START GENESIS.');
     setPrimaryButton('START GENESIS', true, false);
     setSecondaryButton('SPAWN BABLO', false, true);
-    // Убери или закомментируй, если title мешает кнопке
     showCenterTitle('BABLO WEB4 WORLD · GENESIS', 1500);
   }
 
@@ -42,7 +41,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   // 2. Инициализация таймлайна с колбэком завершения
   initTimeline(canvas, () => {
     setMode('game');
-    // startEmojiGame(); // Раскомментируй, если игра должна стартовать сама
+    startEmojiGame();
   });
 
   const primary = get('primary-btn');
@@ -52,9 +51,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     primary.onclick = () => {
       if (state.mode === 'intro') {
         setMode('cosmos');
-        startGenesisTimeline();
-        
-        // ИСПРАВЛЕНО: имя функции должно совпадать с import
+        startGenesisTimeline();        
         startStarsCredits(); 
       }
     };

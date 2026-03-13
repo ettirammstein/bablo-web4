@@ -1,4 +1,4 @@
-import { HISTORY_EVENTS } from './historyData.js';
+import { HISTORY_EVENTS } from './history/historyData.js';
 
 export function startStarsCredits() {
   const layer = document.getElementById('credits-layer');
@@ -12,7 +12,8 @@ export function startStarsCredits() {
   layer.appendChild(inner);
 
   // Создаем строки событий
-  HISTORY_EVENTS.forEach((ev, i) => {
+  for (let i = 0; i < HISTORY_EVENTS.length; i++) {
+    const ev = HISTORY_EVENTS[i];
     const line = document.createElement('div');
     // Добавляем класс 'core' последнему элементу для жирного шрифта Unbounded
     line.className = 'credit-line' + (i === HISTORY_EVENTS.length - 1 ? ' core' : '');
@@ -20,7 +21,9 @@ export function startStarsCredits() {
     const icon = ev.icon ? ev.icon + ' ' : '';
     const text = `${ev.year} · ${icon}${ev.txt}`;
 
-    // Разбиваем текст на span для работы CSS-анимации @keyframes comet.forEach((ch, idx) => {
+    // Разбиваем текст на span для работы CSS-анимации @keyframes comet
+    for (let idx = 0; idx < text.length; idx++) {
+      const ch = text[idx];
       const span = document.createElement('span');
       span.textContent = ch === ' ' ? '\u00A0' : ch; // Обработка пробелов
       span.style.setProperty('--i', idx);
@@ -29,7 +32,7 @@ export function startStarsCredits() {
       if (idx < 3) span.classList.add('comet-head');
       
       line.appendChild(span);
-    });
+    }
 
     inner.appendChild(line);
   };
