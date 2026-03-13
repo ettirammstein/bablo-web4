@@ -196,3 +196,20 @@ button.secondary { background: rgba(255,255,255,0.1); color: #fff; }
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
+
+#hud-top-grid {
+  display: flex;
+  align-items: center; 
+  gap: 30px; 
+}
+
+.counters-group {
+  display: flex;
+  gap: 25px; 
+  flex-shrink: 0; 
+}
+
+#timeline-vessel {
+  flex-grow: 1; 
+  height: 20px;
+}
