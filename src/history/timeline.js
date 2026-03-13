@@ -62,30 +62,62 @@ export function initTimeline(canvas, onFinish) {
     render(performance.now());
 }
 
+// Внутри функции update(dt) в timeline.js
+
 function update(dt) {
-    progress += dt / CONFIG.totalDuration;
-    if (progress >= 1) {
-        progress = 1;
-        genesisActive = false;
-        // Здесь можно вызвать finalizeGenesis()
+  // 1. Прогресс (от 0 до 1)
+  progress += dt / CONFIG.totalDuration;
+  
+  // Улетающая кнопка при старте
+  if (progress > 0.01) {
+    const btn = document.getElementById('hud-bottom');
+    if (btn) btn.style.opacity = '0'; // Плавно гасим
+    if (progress > 0.05) btn.style.display = 'none'; // Убираем совсем
+  }
+
+  const eased = 1 - Math.pow(1 - progress, 2); // Плавное замедление к концу
+  
+  // 2. Жидкость и Годы
+  const fill = document.getElementById('progress-fill');
+  if (fill) fill.style.width = `${eased * 100}%`;
+  
+  const currentYear = -13800000000 + (13800000000 + 2026) * eased;
+  const days = Math.floor(Math.abs(currentYear) * 365);
+  document.getElementById('days-counter').textContent = days.toLocaleString();
+
+  // 3. Синхронизация событий
+  HISTORY_EVENTS.forEach(ev => {
+    if (!ev.done && currentYear >= ev.year) {
+      ev.done = true;
+      spawnStoryLine(ev.txt);
     }
+  });
 
-    // Нелинейное замедление: в начале летит, в конце ползет
-    const eased = 1 - Math.pow(1 - progress, 3); 
-    
-    // 1. Обновляем счетчик дней (Одометр)
-    const currentDays = Math.floor(CONFIG.startDays * (1 - eased));
-    const daysEl = get('days-counter');
-    if (daysEl) daysEl.textContent = currentDays.toLocaleString('ru-RU');
-
-    // 2. Обновляем прогресс-бар (Жидкость)
-    const fill = get('progress-fill');
-    if (fill) fill.style.width = `${eased * 100}%`;
-
-    // 3. Проверка событий истории
-    const currentYear = -13800000000 + (13800000000 + 2026) * eased;
-    checkEvents(currentYear);
+  // 4. Финал кино (всё исчезает)
+  if (progress >= 0.99) {
+    document.getElementById('hud-top').style.opacity = '0';
+    document.getElementById('hud-top').style.transition = '2s';
+    // Вызываем переход в игру
+  }
 }
+
+function spawnStoryLine(text) {
+  const container = document.getElementById('story-stream');
+  const line = document.createElement('div');
+  line.className = 'story-line';
+  
+  // "Печатаем" буквы со свечением
+  text.split('').forEach((char, i) => {
+    const span = document.createElement('span');
+    span.textContent = char;
+    span.className = 'char-glow';
+    span.style.animationDelay = `${i * 30}ms`;
+    line.appendChild(span);
+  });
+
+  container.appendChild(line);
+}
+
 
 function checkEvents(currentYear) {
     HISTORY_EVENTS.forEach(ev => {
